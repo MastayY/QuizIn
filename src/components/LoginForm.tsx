@@ -39,7 +39,7 @@ export function LoginForm({
                 console.log(response.user.uid);
                 navigate("/");
             })
-            .catch((err) => {
+            .catch(() => {
                 toast.error("Error signing in with Google", {
                     description: "Please try again later",
                     style: {
@@ -61,8 +61,7 @@ export function LoginForm({
                 console.log(response.user.uid);
                 navigate("/");
             })
-            .catch((err) => {
-                console.log(err);
+            .catch(() => {
                 toast.error("Error signing in with email", {
                     description: "Check your email and password",
                     style: {

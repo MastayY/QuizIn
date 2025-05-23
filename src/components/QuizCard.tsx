@@ -1,11 +1,8 @@
 import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
 
 interface QuizCardPropsTypes {
     question: string;
     options: string[];
-    currentQuestion: number;
-    totalQuestions: number;
     showAnswer: boolean;
     correctAnswer: string;
     selectedChoice: string | null;
@@ -16,8 +13,6 @@ const QuizCard = (props: QuizCardPropsTypes) => {
     const {
         question,
         options,
-        currentQuestion,
-        totalQuestions,
         showAnswer,
         correctAnswer,
         selectedChoice,
@@ -27,10 +22,6 @@ const QuizCard = (props: QuizCardPropsTypes) => {
     return (
         <Card className="w-full max-w-2xl mx-auto">
             <CardContent className="p-6">
-                <div className="mb-4 text-sm text-gray-500">
-                    Question {currentQuestion} of {totalQuestions}
-                </div>
-
                 <h2
                     className="text-xl font-semibold mb-6"
                     dangerouslySetInnerHTML={{ __html: question }}

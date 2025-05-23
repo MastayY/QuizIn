@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import Loader from './Loader';
 
 export interface IAuthProviderProps {
     children: React.ReactNode;
@@ -25,11 +26,7 @@ const AuthProvider: React.FunctionComponent<IAuthProviderProps> = (props) => {
         return () => unsubscribe();
     }, [auth, navigate]);
 
-    if (loading) return (
-        <div className="flex items-center justify-center h-screen">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-slate-800"></div>
-        </div>
-    );
+    if (loading) return <Loader />;
 
     return <div>{ children }</div>;
 

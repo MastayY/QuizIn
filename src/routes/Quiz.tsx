@@ -20,7 +20,7 @@ const Quiz = () => {
     const [timeLeft, setTimeLeft] = useState(timer);
     const [questions, setQuestions] = useState<QuizQuestion[]>([]);
     const [selectedOption, setSelectedOption] = useState<
-        Array<{ question: string; selectedOption: string; isCorrect: boolean }>
+        Array<{ question: string; selectedOption: string | null; isCorrect: boolean }>
     >([]);
 
     const [showResults, setShowResults] = useState(false);
@@ -95,6 +95,8 @@ const Quiz = () => {
     }, [quizStarted]);
 
     const clearProgress = () => {
+        setQuizStarted(false);
+        setCurrentQuestion(0);
         localStorage.removeItem("quizProgress");
     };
 
@@ -114,7 +116,7 @@ const Quiz = () => {
 
     console.log(questions);
 
-    const progress = (currentQuestion / questions.length) * 100;
+    const progress = ((currentQuestion + 1) / questions.length) * 100;
 
     const handleAnswer = (choice: string) => {
         if (showAnswer) return;
@@ -147,7 +149,6 @@ const Quiz = () => {
             });
         } else {
             toast.error("Wrong Answer!", {
-                description: `Correct answer is: ${correctAnswer}`,
                 style: {
                     background: "#FEF2F2",
                     color: "#B91C1C",
@@ -163,7 +164,7 @@ const Quiz = () => {
         }, 5000);
     };
 
-    const handleNextQuestion = (selectedOption) => {
+    const handleNextQuestion = (_selectedOption: string) => {
         const nextQuestion = currentQuestion + 1;
         if (nextQuestion < questions.length) {
             setCurrentQuestion(nextQuestion);
@@ -208,8 +209,9 @@ const Quiz = () => {
             setCurrentQuestion(nextQuestion);
             setTimeLeft(timer);
         } else {
+            clearProgress();
+            setShowResults(true);
             toast.success("Quiz Completed!", {
-                description: "Check your results!",
                 style: {
                     background: "#ECFDF5",
                     color: "#065F46",
@@ -238,8 +240,18 @@ const Quiz = () => {
 
     if (showResults) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+            <div className="min-h-screen flex flex-col items-center justify-center p-4">
                 <h2 className="text-2xl font-bold mb-4">Quiz Results</h2>
+                <div className="mb-4 p-4 text-center">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Score:{" "}
+                        {selectedOption.filter((item) => item.isCorrect).length}{" "}
+                        / {questions.length}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Review your answers below:
+                    </p>
+                </div>
                 <div className="w-full max-w-2xl">
                     {selectedOption.map((item, index) => (
                         <div key={index} className="mb-4 p-4 border rounded-md">
@@ -276,11 +288,10 @@ const Quiz = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">
             {!quizStarted ? (
                 <div className="text-center max-w-lg w-full">
                     <h2 className="text-4xl font-bold mb-4">Ready to Start?</h2>
-                    {/* instruction box note */}
                     <div className="mb-4 p-4 border rounded-md bg-sky-50 border-sky-200 text-left max-w-lg mx-auto">
                         <p className="text-sm text-sky-700">
                             You have{" "}
@@ -345,8 +356,6 @@ const Quiz = () => {
                             question={questions[currentQuestion].question}
                             options={questions[currentQuestion].allOptions}
                             onAnswerSelect={handleAnswer}
-                            currentQuestion={currentQuestion + 1}
-                            totalQuestions={questions.length}
                             correctAnswer={
                                 questions[currentQuestion].correct_answer
                             }
@@ -374,18 +383,11 @@ const Quiz = () => {
                                                     setCurrentQuestion(0);
                                                     clearProgress();
                                                     navigate("/");
-                                                },
-                                                style: {
-                                                    background: "#EF4444",
-                                                    color: "white",
-                                                },
+                                                }
                                             },
                                             cancel: {
                                                 label: "Continue",
-                                                style: {
-                                                    background: "#10B981",
-                                                    color: "white",
-                                                },
+                                                onClick: () => {}
                                             },
                                         }
                                     );

@@ -34,7 +34,7 @@ export function RegisterForm({
                 console.log(response.user.uid);
                 navigate("/");
             })
-            .catch((err) => {
+            .catch(() => {
                 toast.error("Error signing in with Google", {
                     description: "Please try again later",
                     style: {
